@@ -15,6 +15,10 @@ Clone  repository and run
     dos2unix Druid/conf/druid/historical/jvm.config && \
     dos2unix Druid/conf/druid/middleManager/jvm.config && \
     dos2unix Druid/conf/druid/overlord/jvm.config && \
+    dos2unix Airflow/config/airflow.cfg &&\
+    dos2unix Airflow/dags/tuto.py &&\
+    dos2unix Airflow/script/entrypoint.sh &&\
+    dos2unix Airflow/dags/tuto.py &&\
     docker-compose rm -f && docker-compose build && docker-compose up
    
 
@@ -26,6 +30,7 @@ The compose file is going to launch :
 * 1 superset
 * 1 zeppelin
 * 1 NiFi
+* 1 airflow
 
 and the following druid services :
 

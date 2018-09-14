@@ -1,11 +1,23 @@
 version: "3.3"
 services:
+  # Airflow container
+  docker-airflow:
+    build: Airflow/
+    container_name: docker-airflow
+    environment:
+    - LOAD_EX=n
+    - EXECUTOR=Local
+    - POSTGRES_PASSWORD=SsdDOld23SDmWQ
+    - POSTGRES_HOST=localhost
+    ports:
+    - "8080:8780"
+    network_mode: host
   # Zeppelin container
   docker-zeppelin:
     build: Zeppelin/
     container_name: docker-zeppelin
     ports:
-    - 8080:8080 # Zeppelin
+    - 8080:8680 # Zeppelin
     network_mode: host
   # Zookeeper container
   docker-zookeeper:
@@ -60,8 +72,9 @@ services:
     environment:
     - PG_PASSWORD=TCrGaanoC2s7gT
     - DB_NAME=druid
-    - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://0.0.0.0:9092
-    - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
+    - AIRFLOW_USER=airflow
+    - AIRFLOW_PASS=SsdDOld23SDmWQ
+    - AIRFLOW_DB_NAME=airflow
     ports:
     - 5432:5432 # postgres
     network_mode: host

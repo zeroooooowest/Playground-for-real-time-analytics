@@ -348,6 +348,47 @@ create_database() {
   fi
 }
 
+create_airflow_environment() {
+  if [[ -n ${AIRFLOW_USER} ]]; then
+    case $REPLICATION_MODE in
+      slave|snapshot|backup)
+        echo "INFO! Database airflow user cannot be created on a $REPLICATION_MODE node. Skipping..."
+        ;;
+      *)
+        if [[ -z ${AIRFLOW_PASS} ]]; then
+          echo "ERROR! Please specify a password for AIRFLOW_USER in AIRFLOW_PASS. Exiting..."
+          exit 1
+        fi
+        echo "Creating database user: ${AIRFLOW_USER}"
+        if [[ -z $(psql -U ${PG_USER} -Atc "SELECT 1 FROM pg_catalog.pg_user WHERE usename = '${AIRFLOW_USER}'";) ]]; then
+          psql -U ${PG_USER} -c "CREATE ROLE \"${AIRFLOW_USER}\" with LOGIN CREATEDB PASSWORD '${AIRFLOW_PASS}';" >/dev/null
+        fi
+        ;;
+    esac
+  fi
+  if [[ -n ${AIRFLOW_DB_NAME} ]]; then
+    case $REPLICATION_MODE in
+      slave|snapshot|backup)
+        echo "INFO! Database cannot be created on a $REPLICATION_MODE node. Skipping..."
+        ;;
+      *)
+          echo "Creating database: ${AIRFLOW_DB_NAME}..."
+          if [[ -z $(psql -U ${PG_USER} -Atc "SELECT 1 FROM pg_catalog.pg_database WHERE datname = '${AIRFLOW_DB_NAME}'";) ]]; then
+            psql -U ${PG_USER} -c "CREATE DATABASE \"${AIRFLOW_DB_NAME}\" WITH TEMPLATE = \"${DB_TEMPLATE}\";" >/dev/null
+          fi
+
+          load_extensions ${AIRFLOW_DB_NAME}
+
+          if [[ -n ${AIRFLOW_USER} ]]; then
+            echo "‣ Granting access to ${DB_USER} user..."
+            psql -U ${PG_USER} -c "GRANT ALL PRIVILEGES ON DATABASE \"${AIRFLOW_DB_NAME}\" to \"${AIRFLOW_USER}\";" >/dev/null
+          fi
+        ;;
+    esac
+  fi
+}
+
+
 create_replication_user() {
   if [[ -n ${REPLICATION_USER} ]]; then
     case $REPLICATION_MODE in
@@ -382,6 +423,7 @@ configure_postgresql() {
   create_user
   create_database
   create_replication_user
+  create_airflow_environment
 
   # stop the postgres server
   exec_as_postgres ${PG_BINDIR}/pg_ctl -D ${PG_DATADIR} -w stop >/dev/null
