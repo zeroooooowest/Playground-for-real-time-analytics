@@ -31,6 +31,7 @@ prop_replace 'nifi.remote.input.secure'         'false'
 prop_replace 'baseUrl' "http://${NIFI_WEB_HTTP_HOST:-$HOSTNAME}:${NIFI_WEB_HTTP_PORT:-8080}" ${nifi_toolkit_props_file}
 
 prop_replace 'nifi.variable.registry.properties'    "${NIFI_VARIABLE_REGISTRY_PROPERTIES:-}"
+prop_replace 'nifi.flow.configuration.file'         "${NIFI_FLOW_CONFIGURATION_FILE:-/opt/nifi/nifi-current/conf/flow.xml.gz}"
 prop_replace 'nifi.cluster.is.node'                         "${NIFI_CLUSTER_IS_NODE:-false}"
 prop_replace 'nifi.cluster.node.address'                    "${NIFI_CLUSTER_ADDRESS:-$HOSTNAME}"
 prop_replace 'nifi.cluster.node.protocol.port'              "${NIFI_CLUSTER_NODE_PROTOCOL_PORT:-}"

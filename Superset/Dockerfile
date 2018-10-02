@@ -4,7 +4,7 @@ FROM debian:stretch
 ARG SUPERSET_VERSION=0.26.3
 
 # Configure environment
-ENV GUNICORN_BIND=0.0.0.0:8088 \
+ENV GUNICORN_BIND=0.0.0.0:8588 \
     GUNICORN_LIMIT_REQUEST_FIELD_SIZE=0 \
     GUNICORN_LIMIT_REQUEST_LINE=0 \
     GUNICORN_TIMEOUT=60 \
@@ -17,12 +17,17 @@ ENV GUNICORN_BIND=0.0.0.0:8088 \
     SUPERSET_HOME=/var/lib/superset
 ENV GUNICORN_CMD_ARGS="--workers ${GUNICORN_WORKERS} --timeout ${GUNICORN_TIMEOUT} --bind ${GUNICORN_BIND} --limit-request-line ${GUNICORN_LIMIT_REQUEST_LINE} --limit-request-field_size ${GUNICORN_LIMIT_REQUEST_FIELD_SIZE}"
 
+# admin auth details
+ENV ADMIN_USERNAME admin
+ENV ADMIN_FIRST_NAME admin
+ENV ADMIN_LAST_NAME user
+ENV ADMIN_EMAIL admin@nowhere.com
+ENV ADMIN_PWD superset
+
+COPY superset/requirements.txt /
 # Create superset user & install dependencies
-RUN useradd -U -m superset && \
-    mkdir /etc/superset  && \
+RUN mkdir /etc/superset  && \
     mkdir ${SUPERSET_HOME} && \
-    chown -R superset:superset /etc/superset && \
-    chown -R superset:superset ${SUPERSET_HOME} && \
     apt-get update && \
     apt-get install -y \
         build-essential \
@@ -39,8 +44,8 @@ RUN useradd -U -m superset && \
         python3-pip && \
     apt-get clean && \
     rm -r /var/lib/apt/lists/* && \
-    curl https://raw.githubusercontent.com/${SUPERSET_REPO}/${SUPERSET_VERSION}/requirements.txt -o requirements.txt && \
-    pip3 install --no-cache-dir -r requirements.txt && \
+    #curl https://raw.githubusercontent.com/${SUPERSET_REPO}/${SUPERSET_VERSION}/requirements.txt -o requirements.txt && \
+    pip3 install --no-cache-dir -r /requirements.txt && \
     pip3 install --no-cache-dir \
         Werkzeug==0.12.1 \
         flask-cors==3.0.3 \
@@ -64,16 +69,17 @@ RUN useradd -U -m superset && \
 
 # Configure Filesystem
 COPY superset /usr/local/bin
-RUN chown -R superset:superset /usr/local/bin/superset-init && \
-    chown -R superset:superset /usr/local/bin/superset-demo
 COPY superset_config.py /etc/superset
+COPY superset-init.sh /superset-init.sh
+RUN  chmod +x /superset-init.sh
 VOLUME /home/superset \
        /etc/superset \
        /var/lib/superset
 WORKDIR /home/superset
 
 # Deploy application
-EXPOSE 8088
-HEALTHCHECK CMD ["curl", "-f", "http://localhost:8088/health"]
-CMD ["gunicorn", "superset:app"]
-USER superset
+EXPOSE 8588
+
+ENTRYPOINT [ "/superset-init.sh" ]
+#HEALTHCHECK CMD ["curl", "-f", "http://localhost:8588/health"]
+#CMD ["gunicorn", "superset:app"]

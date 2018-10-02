@@ -3,7 +3,7 @@
 #---------------------------------------------------------
 ROW_LIMIT = 5000
 
-SUPERSET_WEBSERVER_PORT = 8088
+SUPERSET_WEBSERVER_PORT = 8588
 #---------------------------------------------------------
 
 #---------------------------------------------------------
@@ -17,7 +17,7 @@ SECRET_KEY = '\2\thisISaSECRET_1234\1\2\e\y\y\h'
 # superset metadata (slices, connections, tables, dashboards, ...).
 # Note that the connection information to connect to the datasources
 # you want to explore are managed directly in the web UI
-SQLALCHEMY_DATABASE_URI = 'sqlite:////var/lib/superset/superset.db'
+SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://superset:DEkde3467XDer4G@127.0.0.1:5432/superset'
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 # Flask-WTF flag for CSRF

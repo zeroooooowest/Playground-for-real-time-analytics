@@ -40,6 +40,8 @@ and the following druid services :
    * 1 historical
    * 1 overlord
    
+and the following hadoop services :
+   
 The image contains the full druid distribution and use the default druid cli.
 If no command is provided the image will run as a broker.
 
@@ -47,7 +49,43 @@ If no command is provided the image will run as a broker.
 
 The docker-compose file is setup to run on a macbook/centos.
 
+## Ports configuration
 
+| service name | port |
+| ------   | ------ |
+| Airflow  (web)               | 8780 |
+| Airflow                      | 5555 |
+| Airflow                      | 8793 | 
+| Zeppelin (web)               | 8680 | 
+| Zookeeper                    | 2181 | 
+| Zookeeper                    | 2888 | 
+| Zookeeper                    | 3888 | 
+| Nifi (web)                   | 8980 |
+| Nifi                         | 8982 |
+| Nifi                         | 8443 | 
+| Nifi                         | 10000| 
+| Superset (web)               | 8588 | 
+| Kafka                        | 9092 |
+| Kafka                        | 9093 |
+| Kafka                        | 9094 |
+| Postgres                     | 5432 |
+| Druid-coordinator            | 8081 |
+| Druid-overlord               | 8090 |
+| Druid-historical             | 8083 |
+| Druid-middlemanager          | 8091 |
+| Druid-broker                 | 8082 |
+| Hadoop-resourcemanager (web) | 8088 |
+| Hadoop-historyserver  (web)  | 8188 |
+| Hadoop-nodemanager1   (web)  | 8042 |
+| Hadoop-namenode              | 8020 |
+| YARN                         | 8030 |
+| YARN                         | 8031 |
+| YARN                         | 8032 |
+| YARN                         | 8033 |
+| HADOOP datanode              | 50010 |
+| HADOOP datanode (web)        | 50075 |
+| HADOOP datanode              | 50020 |
+| HADOOP namenode (web)        | 50070 |
 based on following repos:
 
 ##### https://github.com/znly/docker-druid
@@ -58,6 +96,7 @@ based on following repos:
 ##### https://github.com/amancevice/superset
 ##### https://github.com/apache/nifi/tree/master/nifi-docker
 ##### https://github.com/puckel/docker-airflow
+##### https://github.com/s22s/hadoop-docker
 
 
 

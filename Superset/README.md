@@ -2,6 +2,20 @@
 
 Docker image for [Superset](https://github.com/ApacheInfra/superset).
 
+## Postgres error (world's bank dashboard)
+
+    Changing the column name to include double quotes works.
+    SELECT country_name AS country_name, SUM(SP_POP_TOTL) AS "sum__SP_POP_TOTL"
+    FROM wb_health_population
+    WHERE year >= '2014-01-01 00:00:00' AND year <= '2014-01-02 00:00:00' GROUP BY country_name ORDER BY "sum__SP_POP_TOTL" DESC
+    LIMIT 50000
+    
+    to
+    
+    SELECT country_name AS country_name, SUM("SP_POP_TOTL") AS "sum__SP_POP_TOTL"
+    FROM wb_health_population
+    WHERE year >= '2014-01-01 00:00:00' AND year <= '2014-01-02 00:00:00' GROUP BY country_name ORDER BY "sum__SP_POP_TOTL" DESC
+    LIMIT 50000
 
 ## Examples
 

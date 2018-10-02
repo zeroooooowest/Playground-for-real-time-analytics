@@ -4,11 +4,20 @@ services:
   docker-airflow:
     build: Airflow/
     container_name: docker-airflow
+    volumes:
+    - ./data/airflow/dags:/usr/local/airflow/dags
+    - ./data/airflow/logs:/usr/local/airflow/logs
     environment:
-    - LOAD_EX=n
-    - EXECUTOR=Local
+    - LOAD_EX=y
+    - EXECUTOR=LocalExecutor
+    - AIRFLOW__CORE__FERNET_KEY=OWMLOx-0IDihuRQtOXZ-GcIpPgSSzsnSilBofvzUVig=
+    - AIRFLOW__CORE__EXECUTOR=LocalExecutor
     - POSTGRES_PASSWORD=SsdDOld23SDmWQ
-    - POSTGRES_HOST=localhost
+    - POSTGRES_HOST=127.0.0.1
+    - AIRFLOW__WEBSERVER__WEB_SERVER_PORT=8780
+    - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:SsdDOld23SDmWQ@localhost:5432/airflow
+    depends_on:
+    - docker-postgres
     ports:
     - "8080:8780"
     network_mode: host
@@ -16,6 +25,9 @@ services:
   docker-zeppelin:
     build: Zeppelin/
     container_name: docker-zeppelin
+    volumes:
+    - ./data/zeppelin/logs:/zeppelin/logs
+    - ./data/zeppelin/notebooks:/zeppelin/notebook
     ports:
     - 8080:8680 # Zeppelin
     network_mode: host
@@ -23,6 +35,8 @@ services:
   docker-zookeeper:
     build: Zookeeper/
     container_name: docker-zookeeper
+    volumes:
+    - ./data/zookeeper:/var/zookeeper
     environment:
     - ZOO_ID=1
     - ZOO_SERVERS=0.0.0.0
@@ -33,29 +47,47 @@ services:
   docker-nifi:
     build: Nifi/
     container_name: docker-nifi
+    volumes:
+    - ./data/nifi/flow:/opt/nifi/nifi-current/flow
+    - ./data/nifi/logs:/opt/nifi/nifi-current/logs
+    - ./data/nifi/database_repository:/opt/nifi/nifi-current/database_repository
+    - ./data/nifi/flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+    - ./data/nifi/content_repository:/opt/nifi/nifi-current/content_repository
+    - ./data/nifi/provenance_repository:/opt/nifi/nifi-current/provenance_repository
+    - ./data/nifi/state:/opt/nifi/nifi-current/state
     environment:
-    - NIFI_WEB_HTTP_PORT=8080
+    - NIFI_WEB_HTTP_PORT=8980
     - NIFI_CLUSTER_IS_NODE=true
-    - NIFI_CLUSTER_NODE_PROTOCOL_PORT=8082
+    - NIFI_CLUSTER_NODE_PROTOCOL_PORT=8982
     - NIFI_ZK_CONNECT_STRING=localhost:2181
     - NIFI_ELECTION_MAX_WAIT=1 min
-    ports:
-    - 8080:8980 # Nifi
+    - NIFI_FLOW_CONFIGURATION_FILE=./flow/flow.xml.gz
+    depends_on:
+    - docker-zookeeper
     network_mode: host
   # Superset container
   docker-superset:
     build: Superset/
     container_name: docker-superset
+    volumes:
+    - ./data/superset/data:/var/lib/superset
+    - ./data/superset/home:/home/superset
     environment:
-    - MAPBOX_API_KEY=${MAPBOX_API_KEY}
+    - MAPBOX_API_KEY=pk.eyJ1IjoiYXN0cmFoYW5pbm4iLCJhIjoiY2ptaHFmemUwMmV5djNrbnlidDF0a3NyZCJ9.vAaO8PQeadUKHqxh9XRw9w
+    depends_on:
+    - docker-postgres
     ports:
-    - 8088:8088 # Superset
+    - 8088:8588 # Superset
     network_mode: host
   # Kafka container
   docker-kafka:
     build: Kafka/
     container_name: docker-kafka
+    volumes:
+    - ./data/kafka/partitions:/kafka
+    - ./data/kafka/logs:/opt/kafka/logs
     environment:
+    - KAFKA_BROKER_ID=999
     - KAFKA_ZOOKEEPER_CONNECT=localhost:2181
     - KAFKA_ADVERTISED_HOST_NAME=localhost
     - AUTO_CREATE_TOPICS=false
@@ -69,12 +101,17 @@ services:
   docker-postgres:
     build: Postgres/
     container_name: docker-postgres
+    volumes:
+    - ./data/postgres:/var/lib/postgresql
     environment:
     - PG_PASSWORD=TCrGaanoC2s7gT
     - DB_NAME=druid
     - AIRFLOW_USER=airflow
     - AIRFLOW_PASS=SsdDOld23SDmWQ
     - AIRFLOW_DB_NAME=airflow
+    - SUPERSET_USER=superset
+    - SUPERSET_PASS=DEkde3467XDer4G
+    - SUPERSET_DB_NAME=superset
     ports:
     - 5432:5432 # postgres
     network_mode: host
@@ -82,6 +119,10 @@ services:
   docker-druid-coordinator:
     build: Druid/
     container_name: docker-druid-coordinator
+  #  volumes:
+  #  - ./data/druid/tmp:/tmp
+  #  - ./data/druid/var:/opt/druid/var
+  #  - ./data/druid/extensions:/opt/druid/extensions
     environment:
     - DRUID_XMX=1g
     - DRUID_XMS=1g
@@ -99,6 +140,10 @@ services:
   docker-druid-overlord:
     build: Druid/
     container_name: docker-druid-overlord
+  #  volumes:
+  #  - ./data/druid/tmp:/tmp
+  #  - ./data/druid/var:/opt/druid/var
+  #  - ./data/druid/extensions:/opt/druid/extensions
     environment:
     - DRUID_XMX=1g
     - DRUID_XMS=1g
@@ -112,11 +157,15 @@ services:
     depends_on:
     - docker-zookeeper
     - docker-postgres
-    - docker-druid-coordinator
+  #  - docker-druid-coordinator
   # Druid-overlord container
   docker-druid-historical:
     build: Druid/
     container_name: docker-druid-historical
+  #  volumes:
+  #  - ./data/druid/tmp:/tmp
+  #  - ./data/druid/var:/opt/druid/var
+  #  - ./data/druid/extensions:/opt/druid/extensions
     environment:
     - DRUID_XMX=1g
     - DRUID_XMS=1g
@@ -130,10 +179,14 @@ services:
     depends_on:
     - docker-zookeeper
     - docker-postgres
-    - docker-druid-coordinator
-    - docker-druid-overlord
+  #  - docker-druid-coordinator
+  #  - docker-druid-overlord
   # Druid-overlord container
   docker-druid-middlemanager:
+  #  volumes:
+  #  - ./data/druid/tmp:/tmp
+  #  - ./data/druid/var:/opt/druid/var
+  #  - ./data/druid/extensions:/opt/druid/extensions
     build: Druid/
     container_name: docker-druid-middlemanager
     environment:
@@ -149,13 +202,17 @@ services:
     depends_on:
     - docker-zookeeper
     - docker-postgres
-    - docker-druid-coordinator
-    - docker-druid-overlord
-    - docker-druid-historical
-  # Druid-overlord container
+  #  - docker-druid-coordinator
+  #  - docker-druid-overlord
+  #  - docker-druid-historical
+  # Druid-broker container
   docker-druid-broker:
     build: Druid/
     container_name: docker-druid-broker
+  #  volumes:
+  #  - ./data/druid/tmp:/tmp
+  #  - ./data/druid/var:/opt/druid/var
+  #  - ./data/druid/extensions:/opt/druid/extensions
     environment:
     - DRUID_XMX=1g
     - DRUID_XMS=1g
@@ -169,7 +226,72 @@ services:
     depends_on:
     - docker-zookeeper
     - docker-postgres
-    - docker-druid-coordinator
-    - docker-druid-overlord
-    - docker-druid-historical
-    - docker-druid-middlemanager
+   # - docker-druid-coordinator
+   # - docker-druid-overlord
+   # - docker-druid-historical
+   # - docker-druid-middlemanager
+   # - docker-hadoop-historyserver
+    
+  docker-hadoop-namenode:
+    build: Hadoop/namenode
+    container_name: docker-hadoop-namenode
+    volumes:
+    - ./data/hadoop/namenode:/hadoop/dfs/name
+    environment:
+    - CLUSTER_NAME=hadoop-cluster
+    env_file:
+    - Hadoop/hadoop.env
+    ports:
+    - 8020:8020
+    network_mode: host
+
+  docker-hadoop-datanode1:
+    build: Hadoop/datanode
+    container_name: docker-hadoop-datanode1
+    depends_on:
+    - docker-hadoop-namenode
+    volumes:
+    - ./data/hadoop/datanode1:/hadoop/dfs/data
+    ports:
+    - 50075:50075
+    env_file:
+    - Hadoop/hadoop.env
+    network_mode: host
+
+  docker-hadoop-resourcemanager:
+    build: Hadoop/resourcemanager
+    container_name: docker-hadoop-resourcemanager
+    depends_on:
+    - docker-hadoop-namenode
+    - docker-hadoop-datanode1
+    ports:
+    - 8088:8388
+    env_file:
+    - Hadoop/hadoop.env
+    network_mode: host
+
+  docker-hadoop-historyserver:
+    build: Hadoop/historyserver
+    container_name: docker-hadoop-historyserver
+    volumes:
+    - ./data/hadoop/historyserver:/hadoop/yarn/timeline
+    depends_on:
+    - docker-hadoop-namenode
+    - docker-hadoop-nodemanager1
+    ports:
+    - 8188:8188
+    env_file:
+    - Hadoop/hadoop.env
+    network_mode: host
+
+  docker-hadoop-nodemanager1:
+    build: Hadoop/nodemanager
+    container_name: docker-hadoop-nodemanager1
+    depends_on:
+    - docker-hadoop-namenode
+    - docker-hadoop-resourcemanager
+    ports:
+    - 8042:8042
+    env_file:
+    - Hadoop/hadoop.env
+    network_mode: host

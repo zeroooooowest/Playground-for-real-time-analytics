@@ -30,6 +30,7 @@ ARG NIFI_TOOLKIT_BINARY_PATH=${NIFI_TOOLKIT_BINARY_PATH:-/nifi/${NIFI_VERSION}/n
 
 ENV NIFI_BASE_DIR=/opt/nifi
 ENV NIFI_HOME ${NIFI_BASE_DIR}/nifi-current
+ENV NIFI_FLOW_DIR ${NIFI_HOME}/flow
 ENV NIFI_TOOLKIT_HOME ${NIFI_BASE_DIR}/nifi-toolkit-current
 
 ENV NIFI_PID_DIR=${NIFI_HOME}/run
@@ -38,14 +39,11 @@ ENV NIFI_LOG_DIR=${NIFI_HOME}/logs
 ADD sh/ ${NIFI_BASE_DIR}/scripts/
 
 # Setup NiFi user and create necessary directories
-RUN groupadd -g ${GID} nifi || groupmod -n nifi `getent group ${GID} | cut -d: -f1` \
-    && useradd --shell /bin/bash -u ${UID} -g ${GID} -m nifi \
-    && mkdir -p ${NIFI_BASE_DIR} \
-    && chown -R nifi:nifi ${NIFI_BASE_DIR} \
+RUN mkdir -p ${NIFI_BASE_DIR} \
     && apt-get update \
     && apt-get install -y jq xmlstarlet procps
 
-USER nifi
+RUN chmod +x -R ${NIFI_BASE_DIR}/scripts/
 
 # Download, validate, and expand Apache NiFi Toolkit binary.
 RUN curl -fSL ${MIRROR_BASE_URL}/${NIFI_TOOLKIT_BINARY_PATH} -o ${NIFI_BASE_DIR}/nifi-toolkit-${NIFI_VERSION}-bin.zip \
@@ -68,10 +66,12 @@ RUN curl -fSL ${MIRROR_BASE_URL}/${NIFI_BINARY_PATH} -o ${NIFI_BASE_DIR}/nifi-${
     && mkdir -p ${NIFI_HOME}/provenance_repository \
     && mkdir -p ${NIFI_HOME}/state \
     && mkdir -p ${NIFI_LOG_DIR} \
+    && mkdir -p ${NIFI_FLOW_DIR} \
     && ln -s ${NIFI_HOME} ${NIFI_BASE_DIR}/nifi-${NIFI_VERSION}
 
 VOLUME ${NIFI_LOG_DIR} \
        ${NIFI_HOME}/conf \
+       ${NIFI_HOME}/flow \
        ${NIFI_HOME}/database_repository \
        ${NIFI_HOME}/flowfile_repository \
        ${NIFI_HOME}/content_repository \

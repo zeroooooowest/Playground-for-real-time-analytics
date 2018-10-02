@@ -104,7 +104,10 @@ RUN echo "$LOG_TAG Cleanup" && \
     apt-get autoclean && \
     apt-get clean
 
-EXPOSE 8080
+VOLUME /zeppelin/logs \
+       /zeppelin/notebook
+
+EXPOSE 8680
 
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 WORKDIR ${Z_HOME}

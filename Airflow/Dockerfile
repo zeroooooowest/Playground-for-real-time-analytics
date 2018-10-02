@@ -7,9 +7,8 @@ ENV TERM linux
 
 # Airflow
 ARG AIRFLOW_VERSION=1.10.0
-ARG AIRFLOW_HOME=/usr/local/airflow
 ENV AIRFLOW_GPL_UNIDECODE yes
-
+ENV AIRFLOW_HOME=/usr/local/airflow
 # Define en_US.
 ENV LANGUAGE en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -54,7 +53,7 @@ RUN set -ex \
     && pip install pyOpenSSL \
     && pip install ndg-httpsclient \
     && pip install pyasn1 \
-    && pip install apache-airflow[crypto,celery,postgres,hive,jdbc,druid,mysql,hdfs,mssql,password]==$AIRFLOW_VERSION \
+    && pip install apache-airflow[kubernetes,crypto,celery,postgres,hive,jdbc,druid,mysql,hdfs,mssql,password]==$AIRFLOW_VERSION \
     && pip install 'celery[redis]>=4.1.1,<4.2.0' \
     && apt-get purge --auto-remove -yqq $buildDeps \
     && apt-get autoremove -yqq --purge \
@@ -71,11 +70,10 @@ COPY script/entrypoint.sh /entrypoint.sh
 RUN chmod +x entrypoint.sh
 COPY config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
 
-RUN chown -R airflow: ${AIRFLOW_HOME}
+VOLUME ${AIRFLOW_HOME}/logs \
+       ${AIRFLOW_HOME}/dags
 
-EXPOSE 8080 5555 8793
-
-USER airflow
+EXPOSE 8780 5555 8793
 WORKDIR ${AIRFLOW_HOME}
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["webserver"] # set default arg for entrypoint

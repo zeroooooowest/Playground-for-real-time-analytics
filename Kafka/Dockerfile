@@ -4,8 +4,6 @@ ARG kafka_version=2.0.0
 ARG scala_version=2.12
 ARG glibc_version=2.27-r0
 
-MAINTAINER wurstmeister
-
 ENV KAFKA_VERSION=$kafka_version \
     SCALA_VERSION=$scala_version \
     KAFKA_HOME=/opt/kafka \
@@ -30,7 +28,8 @@ RUN apk add --no-cache bash curl jq docker \
 
 COPY overrides /opt/overrides
 
-VOLUME ["/kafka"]
+VOLUME /kafka \
+       /opt/kafka/logs/
 
 # Use "exec" form so that it runs as PID 1 (useful for graceful shutdown)
 CMD ["start-kafka.sh"]

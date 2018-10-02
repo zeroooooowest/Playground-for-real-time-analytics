@@ -37,4 +37,13 @@ fi
 #    sed -ri 's/druid.host=.*/druid.host='${ipaddress}'/g' /opt/druid/conf/druid/$1/runtime.properties
 #fi
 
+#uncomment for getting extensions
+#java -classpath "/opt/druid-$DRUID_VERSION/lib/*" \
+#        io.druid.cli.Main tools pull-deps --clean -c \
+#        io.druid.extensions: \
+#                            mysql-metadata-storage:0.12.2 -c \
+#                            io.druid.extensions.contrib:druid-rabbitmq:0.12.2 -h \
+#                            org.apache.hadoop:hadoop-client:2.3.0 -h \
+#                            org.apache.hadoop:hadoop-client:2.9.1
+
 java `cat /opt/druid/conf/druid/$1/jvm.config | xargs` -cp /opt/druid/conf/druid/_common:/opt/druid/conf/druid/$1:/opt/druid/lib/* io.druid.cli.Main server $@

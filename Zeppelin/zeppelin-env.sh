@@ -17,7 +17,7 @@
 #
 
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-export ZEPPELIN_PORT=8080
+export ZEPPELIN_PORT=8680
 export ZEPPELIN_CREDENTIALS_PERSIST=true
 export ZEPPELIN_SERVER_CONTEXT_PATH=/
 

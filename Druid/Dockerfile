@@ -44,15 +44,6 @@ RUN cd /opt/druid-$DRUID_VERSION \
 COPY conf /opt/druid-$DRUID_VERSION/conf
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
-#uncomment for getting extensions
-#java -classpath "/opt/druid-$DRUID_VERSION/lib/*" \
-#        io.druid.cli.Main tools pull-deps --clean -c \
-#        io.druid.extensions: \
-#                            mysql-metadata-storage:0.12.2 -c \
-#                            io.druid.extensions.contrib:druid-rabbitmq:0.12.2 -h \
-#                            org.apache.hadoop:hadoop-client:2.3.0 -h \
-#                            org.apache.hadoop:hadoop-client:2.4.0
-
 # Expose ports:
 # - 8081: HTTP (coordinator)
 # - 8082: HTTP (broker)
@@ -66,7 +57,7 @@ EXPOSE 8083
 EXPOSE 8090
 EXPOSE 8091
 
-VOLUME /tmp
-VOLUME /opt/druid-$DRUID_VERSION/var
-
+VOLUME /tmp \
+       /opt/druid-$DRUID_VERSION/var \
+       /opt/druid/extensions
 ENTRYPOINT ["/docker-entrypoint.sh"]

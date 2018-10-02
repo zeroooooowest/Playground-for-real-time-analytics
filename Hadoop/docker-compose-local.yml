@@ -1,0 +1,69 @@
+version: "2"
+
+services:
+  docker-hadoop-namenode:
+    build: Hadoop/namenode
+    hostname: namenode
+    container_name: docker-hadoop-namenode
+    volumes:
+    - ./data/namenode:/hadoop/dfs/name
+    environment:
+    - CLUSTER_NAME=hadoop-cluster
+    env_file:
+    - Hadoop/hadoop.env
+
+  docker-hadoop-resourcemanager:
+    build: Hadoop/resourcemanager
+    hostname: resourcemanager
+    container_name: docker-hadoop-resourcemanager
+    depends_on:
+    - "docker-hadoop-namenode"
+    links:
+    - "docker-hadoop-namenode"
+    ports:
+    - "58088:8388"
+    env_file:
+    - Hadoop/hadoop.env
+
+  docker-hadoop-historyserver:
+    build: Hadoop/historyserver
+    hostname: historyserver
+    container_name: docker-hadoop-historyserver
+    volumes:
+    - ./data/historyserver:/hadoop/yarn/timeline
+    depends_on:
+    - "docker-hadoop-namenode"
+    links:
+    - "docker-hadoop-namenode"
+    ports:
+    - "58188:8188"
+    env_file:
+    - Hadoop/hadoop.env
+
+  docker-hadoop-nodemanager1:
+    build: Hadoop/nodemanager
+    hostname: nodemanager1
+    container_name: docker-hadoop-nodemanager1
+    depends_on:
+    - "docker-hadoop-namenode"
+    - "docker-hadoop-resourcemanager"
+    links:
+    - "docker-hadoop-namenode"
+    - "docker-hadoop-resourcemanager"
+    ports:
+    - "58042:8042"
+    env_file:
+    - Hadoop/hadoop.env
+
+  docker-hadoop-datanode1:
+    build: Hadoop/datanode
+    hostname: datanode1
+    container_name: docker-hadoop-datanode1
+    depends_on:
+    - "docker-hadoop-namenode"
+    links:
+    - "docker-hadoop-namenode"
+    volumes:
+    - ./data/datanode1:/hadoop/dfs/data
+    env_file:
+    - Hadoop/hadoop.env

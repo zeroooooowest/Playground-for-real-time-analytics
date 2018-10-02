@@ -389,6 +389,47 @@ create_airflow_environment() {
 }
 
 
+create_superset_environment() {
+  if [[ -n ${SUPERSET_USER} ]]; then
+    case $REPLICATION_MODE in
+      slave|snapshot|backup)
+        echo "INFO! Database SUPERSET user cannot be created on a $REPLICATION_MODE node. Skipping..."
+        ;;
+      *)
+        if [[ -z ${SUPERSET_PASS} ]]; then
+          echo "ERROR! Please specify a password for SUPERSET_USER in SUPERSET_PASS. Exiting..."
+          exit 1
+        fi
+        echo "Creating database user: ${SUPERSET_USER}"
+        if [[ -z $(psql -U ${PG_USER} -Atc "SELECT 1 FROM pg_catalog.pg_user WHERE usename = '${SUPERSET_USER}'";) ]]; then
+          psql -U ${PG_USER} -c "CREATE ROLE \"${SUPERSET_USER}\" with LOGIN CREATEDB PASSWORD '${SUPERSET_PASS}';" >/dev/null
+        fi
+        ;;
+    esac
+  fi
+  if [[ -n ${SUPERSET_DB_NAME} ]]; then
+    case $REPLICATION_MODE in
+      slave|snapshot|backup)
+        echo "INFO! Database cannot be created on a $REPLICATION_MODE node. Skipping..."
+        ;;
+      *)
+          echo "Creating database: ${SUPERSET_DB_NAME}..."
+          if [[ -z $(psql -U ${PG_USER} -Atc "SELECT 1 FROM pg_catalog.pg_database WHERE datname = '${SUPERSET_DB_NAME}'";) ]]; then
+            psql -U ${PG_USER} -c "CREATE DATABASE \"${SUPERSET_DB_NAME}\" WITH TEMPLATE = \"${DB_TEMPLATE}\";" >/dev/null
+          fi
+
+          load_extensions ${SUPERSET_DB_NAME}
+
+          if [[ -n ${SUPERSET_USER} ]]; then
+            echo "‣ Granting access to ${DB_USER} user..."
+            psql -U ${PG_USER} -c "GRANT ALL PRIVILEGES ON DATABASE \"${SUPERSET_DB_NAME}\" to \"${SUPERSET_USER}\";" >/dev/null
+          fi
+        ;;
+    esac
+  fi
+}
+
+
 create_replication_user() {
   if [[ -n ${REPLICATION_USER} ]]; then
     case $REPLICATION_MODE in
@@ -424,6 +465,7 @@ configure_postgresql() {
   create_database
   create_replication_user
   create_airflow_environment
+  create_superset_environment
 
   # stop the postgres server
   exec_as_postgres ${PG_BINDIR}/pg_ctl -D ${PG_DATADIR} -w stop >/dev/null

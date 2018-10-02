@@ -18,7 +18,9 @@ RUN mkdir -p /opt && wget -q -O - http://apache.mirrors.ovh.net/ftp.apache.org/d
     && mv /opt/zookeeper-${ZOOKEEPER_VERSION} /opt/zookeeper \
     && mkdir -p ${ZOO_DATA_DIR}
 
+
 COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN  chmod +x docker-entrypoint.sh
 
 EXPOSE 2181 2888 3888
 VOLUME /var/zookeeper
