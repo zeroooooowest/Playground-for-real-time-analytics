@@ -31,10 +31,6 @@ and the following druid services :
    * 1 overlord
    
 and the following hadoop services :
-   
-The image contains the full druid distribution and use the default druid cli.
-If no command is provided the image will run as a broker.
-
 
 
 The docker-compose file is setup to run on a macbook/centos.
@@ -78,6 +74,7 @@ The docker-compose file is setup to run on a macbook/centos.
 | HADOOP datanode (web)        | 50075 |
 | HADOOP datanode              | 50020 |
 | HADOOP namenode (web)        | 50070 |
+
 based on following repos:
 
 ##### https://github.com/znly/docker-druid
