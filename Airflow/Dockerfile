@@ -76,4 +76,5 @@ VOLUME ${AIRFLOW_HOME}/logs \
 EXPOSE 8780 5555 8793
 WORKDIR ${AIRFLOW_HOME}
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["webserver"] # set default arg for entrypoint
+CMD ["webserver"]
+# TODO set default arg for entrypoint

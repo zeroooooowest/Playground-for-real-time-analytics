@@ -1,5 +1,25 @@
 version: "3.3"
 services:
+  # App container
+  docker-app:
+    build: App/
+    container_name: docker-app
+    ports:
+    - 7090:7090
+    network_mode: host
+  # Divolte container
+  docker-divolte:
+    build: Divolte
+    container_name: docker-divolte
+    environment:
+    - DIVOLTE_KAFKA_BROKER_LIST=localhost:9092
+    #volumes:
+    #- ./data/divolte/conf:/opt/divolte/divolte-collector/conf
+    ports:
+    - 7290:7290
+    depends_on:
+    - docker-kafka
+    network_mode: host
   # Airflow container
   docker-airflow:
     build: Airflow/
@@ -248,8 +268,8 @@ services:
   docker-hadoop-datanode1:
     build: Hadoop/datanode
     container_name: docker-hadoop-datanode1
-    depends_on:
-    - docker-hadoop-namenode
+    #depends_on:
+    #- docker-hadoop-namenode
     volumes:
     - ./data/hadoop/datanode1:/hadoop/dfs/data
     ports:
@@ -261,9 +281,9 @@ services:
   docker-hadoop-resourcemanager:
     build: Hadoop/resourcemanager
     container_name: docker-hadoop-resourcemanager
-    depends_on:
-    - docker-hadoop-namenode
-    - docker-hadoop-datanode1
+    #depends_on:
+    #- docker-hadoop-namenode
+    #- docker-hadoop-datanode1
     ports:
     - 8088:8388
     env_file:
@@ -275,9 +295,9 @@ services:
     container_name: docker-hadoop-historyserver
     volumes:
     - ./data/hadoop/historyserver:/hadoop/yarn/timeline
-    depends_on:
-    - docker-hadoop-namenode
-    - docker-hadoop-nodemanager1
+    #depends_on:
+    #- docker-hadoop-namenode
+    #- docker-hadoop-nodemanager1
     ports:
     - 8188:8188
     env_file:
@@ -287,9 +307,9 @@ services:
   docker-hadoop-nodemanager1:
     build: Hadoop/nodemanager
     container_name: docker-hadoop-nodemanager1
-    depends_on:
-    - docker-hadoop-namenode
-    - docker-hadoop-resourcemanager
+    #depends_on:
+    #- docker-hadoop-namenode
+    #- docker-hadoop-resourcemanager
     ports:
     - 8042:8042
     env_file:

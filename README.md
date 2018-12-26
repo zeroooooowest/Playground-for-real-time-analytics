@@ -5,20 +5,10 @@ Clone  repository and run
 
     chmod +x Zookeeper/docker-entrypoint.sh &&\
     chmod +x Druid/docker-entrypoint.sh && \
-    dos2unix Zookeeper/docker-entrypoint.sh && \
-    dos2unix Postgres/runtime/functions && \
-    dos2unix Postgres/runtime/env-defaults && \
-    dos2unix Postgres/entrypoint.sh && \
-    dos2unix Druid/docker-entrypoint.sh && \
-    dos2unix Druid/conf/druid/broker/jvm.config && \
-    dos2unix Druid/conf/druid/coordinator/jvm.config && \
-    dos2unix Druid/conf/druid/historical/jvm.config && \
-    dos2unix Druid/conf/druid/middleManager/jvm.config && \
-    dos2unix Druid/conf/druid/overlord/jvm.config && \
-    dos2unix Airflow/config/airflow.cfg &&\
-    dos2unix Airflow/dags/tuto.py &&\
-    dos2unix Airflow/script/entrypoint.sh &&\
-    dos2unix Airflow/dags/tuto.py &&\
+    chmod +x Divolte/start.sh && \
+    chmod +x App/start.sh && \
+    chmod +x runsys.sh && \
+    chmod +x stopall.sh && \
     docker-compose rm -f && docker-compose build && docker-compose up
    
 
@@ -53,6 +43,8 @@ The docker-compose file is setup to run on a macbook/centos.
 
 | service name | port |
 | ------   | ------ |
+| App  (web)                   | 7090 |
+| Divolte (web)                | 7290 |
 | Airflow  (web)               | 8780 |
 | Airflow                      | 5555 |
 | Airflow                      | 8793 | 

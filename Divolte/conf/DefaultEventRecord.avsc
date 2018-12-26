@@ -1,0 +1,99 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http:// www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+{
+    "namespace": "io.divolte.record",
+    "type": "record",
+    "name": "DefaultEventRecord",
+    "fields": [
+        { "name": "detectedDuplicate",       "type": "boolean" },
+        { "name": "detectedCorruption",      "type": "boolean" },
+        { "name": "firstInSession",          "type": "boolean" },
+        { "name": "timestamp",               "type": "long" },
+        { "name": "clientTimestamp",         "type": "long" },
+        { "name": "remoteHost",              "type": "string" },
+        { "name": "referer",                 "type": ["null", "string"], "default": null },
+        { "name": "location",                "type": ["null", "string"], "default": null },
+        { "name": "viewportPixelWidth",      "type": ["null", "int"],    "default": null },
+        { "name": "viewportPixelHeight",     "type": ["null", "int"],    "default": null },
+        { "name": "screenPixelWidth",        "type": ["null", "int"],    "default": null },
+        { "name": "screenPixelHeight",       "type": ["null", "int"],    "default": null },
+        { "name": "partyId",                 "type": ["null", "string"], "default": null },
+        { "name": "sessionId",               "type": ["null", "string"], "default": null },
+        { "name": "pageViewId",              "type": ["null", "string"], "default": null },
+        { "name": "eventType",               "type": "string",           "default": "unknown" },
+        { "name": "userAgentString",         "type": ["null", "string"], "default": null },
+        { "name": "userAgentName",           "type": ["null", "string"], "default": null },
+        { "name": "userAgentFamily",         "type": ["null", "string"], "default": null },
+        { "name": "userAgentVendor",         "type": ["null", "string"], "default": null },
+        { "name": "userAgentType",           "type": ["null", "string"], "default": null },
+        { "name": "userAgentVersion",        "type": ["null", "string"], "default": null },
+        { "name": "userAgentDeviceCategory", "type": ["null", "string"], "default": null },
+        { "name": "userAgentOsFamily",       "type": ["null", "string"], "default": null },
+        { "name": "userAgentOsVersion",      "type": ["null", "string"], "default": null },
+        { "name": "userAgentOsVendor",       "type": ["null", "string"], "default": null },
+        { "name": "technology",              "type": ["null", "string"], "default": null },
+        { "name": "cityId",                  "type": ["null", "int"],    "default": null },
+        { "name": "cityName",                "type": ["null", "string"], "default": null },
+        { "name": "continentCode",           "type": ["null", "string"], "default": null },
+        { "name": "continentId",             "type": ["null", "int"], "default": null },
+        { "name": "continentName",           "type": ["null", "string"], "default": null },
+        { "name": "countryCode",             "type": ["null", "string"], "default": null },
+        { "name": "countryId",               "type": ["null", "int"], "default": null },
+        { "name": "countryName",             "type": ["null", "string"], "default": null },
+        { "name": "latitude",                "type": ["null", "double"], "default": null },
+        { "name": "longitude",               "type": ["null", "double"], "default": null },
+        { "name": "metroCode",               "type": ["null", "int"], "default": null },
+        { "name": "timeZone",                "type": ["null", "string"], "default": null },
+        { "name": "mostSpecificSubdivisionCode",   "type": ["null", "string"], "default": null },
+        { "name": "mostSpecificSubdivisionId",     "type": ["null", "int"], "default": null },
+        { "name": "mostSpecificSubdivisionName",   "type": ["null", "string"], "default": null },
+        { "name": "postalCode",              "type": ["null", "string"], "default": null }
+    ]
+}
+
+//cityId        - The GeoNames City ID for the geolocation. http://www.geonames.org/
+//cityName      - The city name for the geolocation in English.
+//continentCode - The ISO continent code for the geolocation.
+//continentId   - The GeoNames Continent Id for the geolocation. http://www.geonames.org/
+//continentName - The continent name for the geolocation in English.
+//countryCode   - The ISO country code for the geolocation
+//countryId     - The GeoNames Country Id for the geolocation. http://www.geonames.org/
+//countryName   - The country name for the geolocation in English
+//latitude      - The latitude for the geolocation.
+//longitude     - The longitude for the geolocation.
+//metroCode     - The Metro Code for the geolocation.
+//timeZone      - The name of the time zone for the geolocation as found in the IANA Time Zone Database.
+//mostSpecificSubdivisionCode - The ISO code for the most specific subdivision known for the geolocation.
+//mostSpecificSubdivisionId - The GeoNames ID for the most specific subdivision known for the geolocation.
+//mostSpecificSubdivisionName - he name for the most specific subdivision known for the geolocation in English.
+//postalCode    - The postal code for the geolocation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

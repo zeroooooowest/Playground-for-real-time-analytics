@@ -43,7 +43,7 @@ RUN cd /opt/druid-$DRUID_VERSION \
 
 COPY conf /opt/druid-$DRUID_VERSION/conf
 COPY docker-entrypoint.sh /docker-entrypoint.sh
-
+RUN  chmod +x /docker-entrypoint.sh
 # Expose ports:
 # - 8081: HTTP (coordinator)
 # - 8082: HTTP (broker)

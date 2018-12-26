@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Real-time analytics</title>
+       <meta charset="utf-8">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" integrity="sha384-h21C2fcDk/eFsW9sC9h0dhokq5pDinLNklTKoxIZRUn3+hvmgQSffLLQ4G4l2eEr" crossorigin="anonymous">
+   </head>
+   <body class="page-quickStart">
+      <div class="navbar navbar-default navbar-static-top">
+         <div class="container-fluid">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="navbar-header">
+                     <a class="navbar-brand" href="/">
+                        Пример нагрузочного веб-приложения: <b>Ваш вход на страницу зафиксирован, выберите Мисс офис 2018 года, чтобы информация о ваших действиях попала в отчет</b>
+                     </a>
+                  </div>
+               </div>
+         </div>
+      </div>
+  </div>
+      <div class="container">
+         <div class="row" id="imageContainer">
+         </div>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+      <script src="//localhost:7290/divolte.js" defer async></script>
+      <script>
+        function shuffle(array) {
+          var currentIndex = array.length, temporaryValue, randomIndex;
+          while (0 !== currentIndex) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+          }
+          return array;
+        }
+
+        $(document).ready(function() {
+            shuffle([
+                "Charskaya Elena",
+                "Fedorova Marina",
+                "Pleshakova Anastasiya",
+                "Porandaikina Svetlana",
+                "Shatunina Kristina"
+            ]).forEach(function(element) {
+                $('#imageContainer').append('<div class="col-xs-12 col-md-12"><a href="#" technology="' + element + '" class="thumbnail"><img src="images/' + element + '.png"></a></div>');
+            });
+
+            $('a.thumbnail').click(function (e) {
+                var elementClicked = $(this).attr('technology');
+                console.log("Clicked on: " + elementClicked);
+
+                divolte.signal('myCustomEvent', { technology: elementClicked });
+
+                // custom handling here
+                e.preventDefault();
+            });
+        });
+      </script>
+   </body>
+</html>
