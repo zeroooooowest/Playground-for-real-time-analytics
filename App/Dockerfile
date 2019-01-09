@@ -11,9 +11,6 @@ ENV HTTPS_PROXY: http://s-proxy-04-g.global.bcs:8080
 # Trying manually replace mirror, because mirrors.ubuntu.com is banned
 RUN sed --in-place --regexp-extended "s/(\/\/)(archive\.ubuntu)/\1ru.\2/" /etc/apt/sources.list
 
-RUN echo $HTTP_PROXY
-RUN ping mirrors.ubuntu.com
-
 RUN apt-get update && apt-get install -y python3 && apt-get install -y curl
 
 ADD . /App
