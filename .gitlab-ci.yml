@@ -34,5 +34,5 @@ build:
   stage: build
   script:
     - docker-compose build --compress --force-rm $SERVICE
-    - docker push $IMAGE_TAG
+    - docker push $SERVICE
 # TODO create test - docker run $SERVICE /script/to/run/tests
