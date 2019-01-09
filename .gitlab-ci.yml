@@ -1,5 +1,5 @@
-#image: docker:stable
-image: $CI_REGISTRY/devops/images/docker/buildimage:master
+image: docker:stable
+#image: $CI_REGISTRY/devops/images/docker/buildimage:master
 
 variables:
   # When using dind service we need to instruct docker, to talk with the
