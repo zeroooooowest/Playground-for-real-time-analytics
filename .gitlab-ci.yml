@@ -19,6 +19,9 @@ variables:
   SERVICE: docker-app
   HTTP_PROXY: http://s-proxy-04-g.global.bcs:8080
   HTTPS_PROXY: http://s-proxy-04-g.global.bcs:8080
+  http_proxy: $HTTP_PROXY
+  https_proxy: $HTTPS_PROXY
+ 
   M2_REPO: .m2/repository
 
 
