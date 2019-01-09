@@ -1,5 +1,5 @@
 image: docker:stable
-#image: $CI_REGISTRY/devops/images/docker/buildimage:master
+# image: $CI_REGISTRY/devops/images/docker/buildimage:master
 
 variables:
   # When using dind service we need to instruct docker, to talk with the
@@ -16,7 +16,7 @@ variables:
   # When using dind, it's wise to use the overlayfs driver for
   # improved performance.
   DOCKER_DRIVER: overlay2
-  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  SERVICE: docker-app
   HTTP_PROXY: http://s-proxy-04-g.global.bcs:8080
   HTTPS_PROXY: http://s-proxy-04-g.global.bcs:8080
   M2_REPO: .m2/repository
@@ -33,6 +33,6 @@ before_script:
 build:
   stage: build
   script:
-    - docker-compose build --compress --force-rm $IMAGE_TAG
+    - docker-compose build --compress --force-rm $SERVICE
     - docker push $IMAGE_TAG
-# TODO create test - docker run $IMAGE_TAG /script/to/run/tests
+# TODO create test - docker run $SERVICE /script/to/run/tests
