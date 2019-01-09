@@ -1,6 +1,9 @@
 FROM ubuntu
 LABEL maintainer="Aleksey Shibaev <shibaev@sfera.ru>"
 
+ENV HTTP_PROXY: http://s-proxy-04-g.global.bcs:8080
+ENV HTTPS_PROXY: http://s-proxy-04-g.global.bcs:8080
+
 # Fast Ubuntu mirror
 RUN echo "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe multiverse" >> /etc/apt/sources.list && \
     echo "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
