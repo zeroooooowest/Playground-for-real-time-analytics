@@ -3,6 +3,7 @@ services:
   # App container
   docker-app:
     build: App/
+    image: docker-app:latest
     container_name: docker-app
     ports:
     - 7090:7090
@@ -10,11 +11,13 @@ services:
   # Divolte container
   docker-divolte:
     build: Divolte
+    image: docker-divolte:latest
     container_name: docker-divolte
     environment:
     - DIVOLTE_KAFKA_BROKER_LIST=localhost:9092
-    #volumes:
-    #- ./data/divolte/conf:/opt/divolte/divolte-collector/conf
+    # TODO connect persistent volume
+    # volumes:
+    # - ./data/divolte/conf:/opt/divolte/divolte-collector/conf
     ports:
     - 7290:7290
     depends_on:
@@ -23,6 +26,7 @@ services:
   # Airflow container
   docker-airflow:
     build: Airflow/
+    image: docker-airflow:latest
     container_name: docker-airflow
     volumes:
     - ./data/airflow/dags:/usr/local/airflow/dags
@@ -44,6 +48,7 @@ services:
   # Zeppelin container
   docker-zeppelin:
     build: Zeppelin/
+    image: docker-zeppelin:latest
     container_name: docker-zeppelin
     volumes:
     - ./data/zeppelin/logs:/zeppelin/logs
@@ -54,6 +59,7 @@ services:
   # Zookeeper container
   docker-zookeeper:
     build: Zookeeper/
+    image: docker-zookeeper:latest
     container_name: docker-zookeeper
     volumes:
     - ./data/zookeeper:/var/zookeeper
@@ -66,6 +72,7 @@ services:
   # NiFi container
   docker-nifi:
     build: Nifi/
+    image: docker-nifi:latest
     container_name: docker-nifi
     volumes:
     - ./data/nifi/flow:/opt/nifi/nifi-current/flow
@@ -88,6 +95,7 @@ services:
   # Superset container
   docker-superset:
     build: Superset/
+    image: docker-superset:latest
     container_name: docker-superset
     volumes:
     - ./data/superset/data:/var/lib/superset
@@ -102,6 +110,7 @@ services:
   # Kafka container
   docker-kafka:
     build: Kafka/
+    image: docker-kafka:latest
     container_name: docker-kafka
     volumes:
     - ./data/kafka/partitions:/kafka
@@ -120,6 +129,7 @@ services:
   # Postgres container
   docker-postgres:
     build: Postgres/
+    image: docker-postgres:latest
     container_name: docker-postgres
     volumes:
     - ./data/postgres:/var/lib/postgresql
@@ -138,6 +148,7 @@ services:
   # Druid-coordinator container
   docker-druid-coordinator:
     build: Druid/
+    image: docker-druid-coordinator:latest
     container_name: docker-druid-coordinator
   #  volumes:
   #  - ./data/druid/tmp:/tmp
@@ -159,6 +170,7 @@ services:
   # Druid-overlord container
   docker-druid-overlord:
     build: Druid/
+    image: docker-druid-overlord:latest
     container_name: docker-druid-overlord
   #  volumes:
   #  - ./data/druid/tmp:/tmp
@@ -181,6 +193,7 @@ services:
   # Druid-overlord container
   docker-druid-historical:
     build: Druid/
+    image: docker-druid-historical:latest
     container_name: docker-druid-historical
   #  volumes:
   #  - ./data/druid/tmp:/tmp
@@ -208,6 +221,7 @@ services:
   #  - ./data/druid/var:/opt/druid/var
   #  - ./data/druid/extensions:/opt/druid/extensions
     build: Druid/
+    image: docker-druid-middlemanager:latest
     container_name: docker-druid-middlemanager
     environment:
     - DRUID_XMX=1g
@@ -228,6 +242,7 @@ services:
   # Druid-broker container
   docker-druid-broker:
     build: Druid/
+    image: docker-druid-broker:latest
     container_name: docker-druid-broker
   #  volumes:
   #  - ./data/druid/tmp:/tmp
@@ -254,6 +269,7 @@ services:
     
   docker-hadoop-namenode:
     build: Hadoop/namenode
+    image: docker-hadoop-namenode:latest
     container_name: docker-hadoop-namenode
     volumes:
     - ./data/hadoop/namenode:/hadoop/dfs/name
@@ -267,6 +283,7 @@ services:
 
   docker-hadoop-datanode1:
     build: Hadoop/datanode
+    image: docker-hadoop-datanode1:latest
     container_name: docker-hadoop-datanode1
     #depends_on:
     #- docker-hadoop-namenode
@@ -280,6 +297,7 @@ services:
 
   docker-hadoop-resourcemanager:
     build: Hadoop/resourcemanager
+    image: docker-hadoop-resourcemanager:latest
     container_name: docker-hadoop-resourcemanager
     #depends_on:
     #- docker-hadoop-namenode
@@ -292,6 +310,7 @@ services:
 
   docker-hadoop-historyserver:
     build: Hadoop/historyserver
+    image: docker-hadoop-historyserver:latest
     container_name: docker-hadoop-historyserver
     volumes:
     - ./data/hadoop/historyserver:/hadoop/yarn/timeline
@@ -306,6 +325,7 @@ services:
 
   docker-hadoop-nodemanager1:
     build: Hadoop/nodemanager
+    image: docker-hadoop-nodemanager1:latest
     container_name: docker-hadoop-nodemanager1
     #depends_on:
     #- docker-hadoop-namenode
