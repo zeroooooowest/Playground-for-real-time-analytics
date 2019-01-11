@@ -64,3 +64,12 @@ If both are defined, then the **environment variables** will take priority.
 | ZEPPELIN_NOTEBOOK_GIT_REMOTE_ORIGIN | zeppelin.notebook.git.remote.origin | token | GitHub remote name. Default is `origin` |
 |  |  |  |  |
 |  |  |  |  |
+
+
+## Zeppelin-ms-sql-server-interpreter
+
+* [download](https://www.microsoft.com/en-us/download/confirmation.aspx?id=54671) JDBC driver for sql server provided by MS
+* exact sqljdbc42.jar and save it to local, e.g. /zeppelin/3rd-lib/sqljdbc42.jar
+* create new interpreter with MS SQLServer Driver
+
+![](UNk91.png)

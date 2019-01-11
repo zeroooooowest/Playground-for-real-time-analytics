@@ -112,3 +112,4 @@ EXPOSE 8680
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 WORKDIR ${Z_HOME}
 CMD ["bin/zeppelin.sh"]
+# TODO add sqljdbc42.jar to /zeppelin/interpreter/jdbc
